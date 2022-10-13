@@ -37,6 +37,14 @@ local is_cursor_inside_code_block = function(bufnr)
   for _, node in query:iter_matches(root, bufnr, 0, -1) do
     local row_start, row_end = get_code_block_range(node)
 
+    -- Optimization: Nodes are returned in the order they appear in the buffer.
+    -- If the node is further in the buffer than the cursor, all further nodes
+    -- will also be, so exit early.
+    if cursor_line < row_start then
+      return false
+    end
+
+    -- Check if cursor inside code block node
     if cursor_line > row_start and cursor_line < row_end then
       return true
     end
