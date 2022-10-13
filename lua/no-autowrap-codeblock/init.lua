@@ -1,3 +1,5 @@
+local AUGROUP_NAME = "NoAutowrapCodeblock"
+
 local query = vim.treesitter.parse_query(
   "markdown",
   [[
@@ -76,20 +78,17 @@ local run = function()
   end
 end
 
-local group_id
-
 local is_enabled = function()
   return group_id ~= nil
 end
 
 local create_autocmds = function()
-  group_id = vim.api.nvim_create_augroup("NoAutowrapCodeblock", { clear = true })
+  local group_id = vim.api.nvim_create_augroup(AUGROUP_NAME, { clear = true })
   vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, { pattern = "*.md", callback = run, group = group_id })
 end
 
 local delete_autocmds = function()
-  vim.api.nvim_del_augroup_by_id(group_id)
-  group_id = nil
+  vim.api.nvim_del_augroup_by_name(AUGROUP_NAME)
 end
 
 local enable = function()
